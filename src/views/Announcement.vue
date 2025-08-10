@@ -11,6 +11,7 @@
               <v-text-field type="text" placeholder="Msg(en)" v-model="newAnnounce.msg_en" :disabled="disabled"></v-text-field>
               <v-text-field type="text" placeholder="URI(optional)" v-model="newAnnounce.uri" :disabled="disabled"></v-text-field>
               <v-btn ripple info @click="send" :disabled="disabled" :loading="disabled">Send!</v-btn>
+              <v-switch v-model="withPushNotification" label="withPushNotification" color="primary" :disabled="disabled"></v-switch>
             </v-card-text>
           </v-card>
         </v-col>
@@ -48,6 +49,7 @@
 
 <script>
 import apiClient from '../module/apiClient'
+import oneSignal from '../module/onesignal'
 
 export default {
   name: 'Announcement',
@@ -61,6 +63,7 @@ export default {
         uri: ''
       },
       disabled: false,
+      withPushNotification: false,
       headers: ['公告時間', '發送對象', '中文訊息', '英文訊息', '網址'],
       announcements: [],
       alert: false,
@@ -92,8 +95,24 @@ export default {
             this.alert = true
           })
           .then(() => {
-            this.disabled = false
+            this.disabled = false;
+          });
+        if( this.withPushNotification ) {
+          oneSignal.createNotificationWithTagFilter({
+            target: this.role === this.options[0] ? 'all' : this.role,
+            en: this.newAnnounce.msg_en,
+            'zh-Hant': this.newAnnounce.msg_zh,
+            'zh-Hans': this.newAnnounce.msg_zh
           })
+            .then(() => {
+              this.withPushNotification = false;
+            })
+            .catch((err) => {
+              console.log(err)
+              this.alertMessage = 'Something error on network'
+              this.alert = true
+            })
+        }
       } else {
         this.alert = true
         this.alertMessage = '至少需輸入英文'
