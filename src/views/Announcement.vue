@@ -95,17 +95,17 @@ export default {
             this.alert = true
           })
           .then(() => {
-            this.disabled = false;
-          });
-        if( this.withPushNotification ) {
+            this.disabled = false
+          })
+        if (this.withPushNotification) {
           oneSignal.createNotificationWithTagFilter({
-            target: this.role === this.options[0] ? 'all' : this.role,
+            target: this.newAnnounce.role.toString() === this.options[0].toString() ? 'all' : this.newAnnounce.role,
             en: this.newAnnounce.msg_en,
             'zh-Hant': this.newAnnounce.msg_zh,
             'zh-Hans': this.newAnnounce.msg_zh
           })
             .then(() => {
-              this.withPushNotification = false;
+              this.withPushNotification = false
             })
             .catch((err) => {
               console.log(err)
