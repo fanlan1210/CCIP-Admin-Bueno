@@ -99,7 +99,7 @@ export default {
           })
         if (this.withPushNotification) {
           oneSignal.createNotificationWithTagFilter({
-            target: this.newAnnounce.role.toString() === this.options[0].toString() ? 'all' : this.newAnnounce.role,
+            target: this.newAnnounce.role.toString() === this.options[0].toString() ? 'all' : this.newAnnounce.role[0],
             en: this.newAnnounce.msg_en,
             'zh-Hant': this.newAnnounce.msg_zh,
             'zh-Hans': this.newAnnounce.msg_zh
